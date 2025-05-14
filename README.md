@@ -1,4 +1,5 @@
-🤖 CodSoft AI Internship – Project Repository
+#🤖 CodSoft AI Internship – Project Repository
+
 Welcome to my GitHub repository for the AI Internship at CodSoft!
 This repository contains all the projects and tasks completed during the internship, showcasing practical applications of Artificial Intelligence and Machine Learning using Python and popular frameworks.
 
