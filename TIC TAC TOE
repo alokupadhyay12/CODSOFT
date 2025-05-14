@@ -1,0 +1,106 @@
+import tkinter as tk
+import math
+from tkinter import messagebox
+
+# Initialize board
+board = [" " for _ in range(9)]
+
+def is_winner(brd, player):
+    win_cond = [
+        [0,1,2], [3,4,5], [6,7,8],
+        [0,3,6], [1,4,7], [2,5,8],
+        [0,4,8], [2,4,6]
+    ]
+    return any(all(brd[i] == player for i in combo) for combo in win_cond)
+
+def is_draw():
+    return " " not in board and not is_winner(board, "X") and not is_winner(board, "O")
+
+def minimax(brd, depth, is_max):
+    if is_winner(brd, "X"):
+        return 1
+    elif is_winner(brd, "O"):
+        return -1
+    elif is_draw():
+        return 0
+
+    if is_max:
+        best = -math.inf
+        for i in range(9):
+            if brd[i] == " ":
+                brd[i] = "X"
+                score = minimax(brd, depth + 1, False)
+                brd[i] = " "
+                best = max(best, score)
+        return best
+    else:
+        best = math.inf
+        for i in range(9):
+            if brd[i] == " ":
+                brd[i] = "O"
+                score = minimax(brd, depth + 1, True)
+                brd[i] = " "
+                best = min(best, score)
+        return best
+
+def ai_move():
+    best_score = -math.inf
+    move = -1
+    for i in range(9):
+        if board[i] == " ":
+            board[i] = "X"
+            score = minimax(board, 0, False)
+            board[i] = " "
+            if score > best_score:
+                best_score = score
+                move = i
+    board[move] = "X"
+    buttons[move].config(text="X", state="disabled")
+    check_game_status()
+
+def player_move(i):
+    if board[i] == " ":
+        board[i] = "O"
+        buttons[i].config(text="O", state="disabled")
+        check_game_status()
+        if not is_winner(board, "O") and not is_draw():
+            root.after(500, ai_move)
+
+def check_game_status():
+    if is_winner(board, "O"):
+        messagebox.showinfo("Game Over", "You win!")
+        disable_all_buttons()
+    elif is_winner(board, "X"):
+        messagebox.showinfo("Game Over", "AI wins!")
+        disable_all_buttons()
+    elif is_draw():
+        messagebox.showinfo("Game Over", "It's a draw!")
+        disable_all_buttons()
+
+def disable_all_buttons():
+    for btn in buttons:
+        btn.config(state="disabled")
+
+def reset_game():
+    global board
+    board = [" " for _ in range(9)]
+    for btn in buttons:
+        btn.config(text=" ", state="normal")
+
+# GUI setup
+root = tk.Tk()
+root.title("Tic-Tac-Toe AI")
+root.geometry("300x350")
+
+buttons = []
+for i in range(9):
+    btn = tk.Button(root, text=" ", font=("Arial", 24), width=5, height=2,
+                    command=lambda i=i: player_move(i))
+    btn.grid(row=i//3, column=i%3)
+    buttons.append(btn)
+
+reset_btn = tk.Button(root, text="Reset Game", font=("Arial", 12),
+                      command=reset_game, bg="lightblue")
+reset_btn.grid(row=3, column=0, columnspan=3, sticky="nsew", pady=10)
+
+root.mainloop()
