@@ -15,3 +15,5 @@ During this internship, I worked on a range of AI-focused projects that demonstr
 ✅ Model Evaluation & Optimization
 
 ✅ Real-world Problem Solving using AI Techniques
+
+PROJECT 1
